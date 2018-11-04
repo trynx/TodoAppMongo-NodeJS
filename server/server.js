@@ -5,6 +5,7 @@ let _ = require('lodash');
 var express = require('express');
 var bodyParser = require('body-parser');
 var {ObjectID} = require ('mongodb');
+var bcrypt = require('bcryptjs');
 
 // Local imports
 var {mongoose} = require('./db/mongoose.js');
@@ -130,6 +131,23 @@ app.post('/users', (req, res) => {
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
+
+// POST /users/login
+app.post('/users/login', (req, res) => {
+    // from request get user email & password
+    var body = _.pick(req.body, ['email', 'password']);
+
+    // get from mongoDB the user
+    User.findByCredentials(body.email, body.password).then((user) => {
+        user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((err) => {
+        res.status(400).send();
+    });
+});
+
+// if everything work send back the email
 
 app.listen(port, () => {
     console.log('Started on port', port);
