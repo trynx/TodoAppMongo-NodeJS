@@ -302,4 +302,24 @@ describe('POST /users/login', () => {
                 }).catch((err) => done(err));
             });
     });
-})
+});
+
+describe('DELETE /users/signout', () => {
+    it('Should remove auth token on logout', (done) => {
+         // DELETE /users/signout
+         request(app)
+            .delete('/users/signout')
+            .set('x-auth', users[0].tokens[0].token)
+            .expect(200)
+            .end((err, res) => {
+                if(err){
+                    return done(err);
+                }
+
+                User.findById(users[0]._id).then((user) => {
+                    expect(user.tokens.length).toBe(0);
+                    done();
+                }).catch((err) => done(err));
+            });
+    });
+});
