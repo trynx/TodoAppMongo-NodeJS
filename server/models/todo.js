@@ -14,19 +14,12 @@ var Todo = mongoose.model('Todo', {
     completedAt: {
         type: Number,
         default: null 
+    },
+    _creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true
     }
 });
 
-
-// Examples 
-// var newTodo = new Todo({
-//     completed: false,
-//     text: 'Play Maple Story 2'
-// });
-// newTodo.save().then((res) => {
-//     console.log('Add todo', res);
-// }, (err) => {
-//     console.log('Unable to save todo');
-// });
 
 module.exports = {Todo};
